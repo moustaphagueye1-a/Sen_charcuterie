@@ -1,9 +1,8 @@
 from django.urls import path
-from shop.views import index, detail, verifier 
+from . import views
 
 urlpatterns = [
-    path('', index, name='home'),
-    # Correction : On ajoute les chevrons et le slash final
-    path('<int:myid>/', detail, name='detail'), 
-    path('verifier', verifier, name='Detail_achat'),
+    path('', views.index, name='home'),
+    path('<int:myid>/', views.detail, name='detail'),
+    path('verifier/', views.verifier, name='verifier'),
 ]

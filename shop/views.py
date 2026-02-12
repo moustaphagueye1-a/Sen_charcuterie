@@ -2,13 +2,14 @@ from django.shortcuts import render, get_object_or_404
 from .models import Produit
 from django.core.paginator import Paginator
 
+
 def index(request):
     produits_list = Produit.objects.all()
 
-    # Récupération du champ recherche
+    # On récupère la valeur du champ recherche
     item_name = request.GET.get('item-name', '')
 
-    # Filtrage si recherche
+    # Si l'utilisateur a tapé quelque chose
     if item_name:
         produits_list = produits_list.filter(nom__icontains=item_name)
 
@@ -17,12 +18,11 @@ def index(request):
     page = request.GET.get('page')
     produits = paginator.get_page(page)
 
-    context = {
+    # On envoie aussi item_name au template
+    return render(request, 'shop/index.html', {
         'produits': produits,
         'item_name': item_name
-    }
-
-    return render(request, 'shop/index.html', context)
+    })
 
 
 def detail(request, myid):

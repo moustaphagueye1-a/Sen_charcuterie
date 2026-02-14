@@ -1,47 +1,132 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="bg-white p-5 rounded shadow-sm border-top border-warning border-5">
-    <h2 class="fw-bold mb-4 text-uppercase">Récapitulatif de Commande</h2>
-    <table class="table table-hover">
-        <thead class="table-light">
-            <tr>
-                <th>Produit</th>
-                <th>Quantité</th>
-                <th>Prix Unitaire</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody id="panier-items">
-            </tbody>
-    </table>
-    <div class="text-end mt-4">
-        <h3 class="fw-bold text-dark">Total Général : <span id="grand-total" class="text-success">0</span> FCFA</h3>
-        <button class="btn btn-success btn-lg px-5 rounded-pill mt-3 fw-bold">Confirmer l'achat</button>
-        <button onclick="localStorage.clear(); location.reload();" class="btn btn-link text-muted mt-3 d-block ms-auto">Vider le panier</button>
+<div class="row">
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-dark text-white fw-bold">
+                <i class="fas fa-shopping-basket me-2"></i>Résumé de la commande
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush" id="item-list">
+                    </ul>
+                <div class="d-flex justify-content-between mt-3 p-3 bg-light rounded border-start border-success border-4">
+                    <span class="fw-bold text-uppercase">Total à payer :</span>
+                    <span class="fw-bold text-success" style="font-size: 1.2rem;">
+                        <span id="total_display">0</span> FCFA
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0 p-4 border-top border-primary border-5">
+            <h4 class="mb-4 fw-bold text-primary text-uppercase text-center">Informations de livraison</h4>
+            
+            <form method="POST" id="form-commande">
+                {% csrf_token %}
+                
+                <input type="hidden" name="items" id="items">
+                <input type="hidden" name="total" id="total_db">
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Nom Complet</label>
+                        <input type="text" name="nom" id="nom" class="form-control" placeholder="Prénom et Nom" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Email</label>
+                        <input type="email" name="email" id="email" class="form-control" placeholder="votre@email.com" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Téléphone (WhatsApp)</label>
+                        <input type="text" name="telephone" id="telephone" class="form-control" placeholder="77 000 00 00" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Région</label>
+                        <select name="region" id="region" class="form-select" required>
+                            <option value="" selected disabled>Choisir la région...</option>
+                            <option>Dakar</option>
+                            <option>Thiès</option>
+                            <option>Saint-Louis</option>
+                            <option>Diourbel</option>
+                            <option>Autre...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Ville ou Commune</label>
+                        <input type="text" name="commune" id="commune" class="form-control" placeholder="Ex: Parcelles, Mbour..." required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Adresse précise</label>
+                        <input type="text" name="adresse" id="adresse" class="form-control" placeholder="N° de porte, Rue..." required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Mot de passe (pour votre compte)</label>
+                    <input type="password" name="password" class="form-control" placeholder="********">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 fw-bold py-3 mt-2 shadow-sm">
+                    <i class="fas fa-check-circle me-2"></i>CONFIRMER LA COMMANDE
+                </button>
+            </form>
+            
+            <button onclick="localStorage.clear(); window.location.href='/';" class="btn btn-link text-danger w-100 mt-3 text-decoration-none">
+                <i class="fas fa-trash-alt me-1"></i> Annuler et vider le panier
+            </button>
+        </div>
     </div>
 </div>
 
-<script>
+<script type="text/javascript">
+    // 1. On récupère le panier du localStorage
     var panier = JSON.parse(localStorage.getItem('panier')) || {};
     var totalGeneral = 0;
-    var tbody = $('#panier-items');
+    var itemList = $('#item-list');
 
+    // 2. Si le panier est vide, on affiche un message
     if (Object.keys(panier).length === 0) {
-        tbody.append('<tr><td colspan="4" class="text-center py-4">Votre panier est vide.</td></tr>');
+        itemList.append('<li class="list-group-item text-center py-4">Votre panier est vide</li>');
+        $('button[type="submit"]').addClass('disabled').prop('disabled', true);
     } else {
+        // 3. Sinon, on boucle pour afficher chaque article et calculer le total
         for (var id in panier) {
-            var totalLigne = panier[id].quantite * parseFloat(panier[id].prix);
-            totalGeneral += totalLigne;
-            tbody.append(`
-                <tr>
-                    <td class="fw-bold">${panier[id].nom}</td>
-                    <td><span class="badge bg-secondary">${panier[id].quantite}</span></td>
-                    <td>${panier[id].prix} FCFA</td>
-                    <td class="fw-bold">${totalLigne} FCFA</td>
-                </tr>
+            let item = panier[id];
+            let prixLigne = item.quantite * item.prix;
+            totalGeneral += prixLigne;
+            
+            itemList.append(`
+                <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                    <div>
+                        <h6 class="my-0 fw-bold">${item.nom}</h6>
+                        <small class="text-muted">Prix: ${item.prix} x ${item.quantite}</small>
+                    </div>
+                    <span class="fw-bold">${prixLigne.toLocaleString()} FCFA</span>
+                </li>
             `);
         }
     }
-    $('#grand-total').text(totalGeneral);
+
+    // 4. MISE À JOUR DES VALEURS (Affichage + Champs cachés pour Django)
+    $('#total_display').text(totalGeneral.toLocaleString());
+    
+    // TRÈS IMPORTANT : On injecte les données dans les inputs hidden pour que Django les reçoive
+    $('#total_db').val(totalGeneral); 
+    $('#items').val(JSON.stringify(panier));
+
+    // 5. Action lors de la soumission
+    $('#form-commande').submit(function() {
+        // Optionnel : on peut afficher un petit message avant de vider
+        localStorage.clear(); // On vide le panier local après l'envoi
+    });
 </script>
 {% endblock %}

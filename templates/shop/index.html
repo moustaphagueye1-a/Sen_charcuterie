@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <div class="row row-cols-1 row-cols-md-4 g-4">
     {% for produit in produits %}
@@ -9,10 +10,15 @@
             {% endif %}
             <div class="card-body text-center">
                 <h5 class="card-title fw-bold" id="nm{{produit.id}}">{{ produit.nom }}</h5>
-                <p class="text-success fw-bold"><span id="pr{{produit.id}}">{{ produit.prix }}</span> FCFA</p>
+                <p class="text-success fw-bold">
+                    <span id="pr{{produit.id}}">{{ produit.prix }}</span> FCFA
+                </p>
+                
                 <div class="d-grid gap-2">
                     <a href="{% url 'detail' produit.id %}" class="btn btn-outline-secondary btn-sm rounded-pill">Détails</a>
-                    <button id="{{ produit.id }}" class="btn ted btn-primary btn-sm rounded-pill">Ajouter</button>
+                    <button id="{{ produit.id }}" class="btn ted btn-primary btn-sm rounded-pill fw-bold">
+                        Ajouter au panier
+                    </button>
                 </div>
             </div>
         </div>
@@ -20,20 +26,38 @@
     {% endfor %}
 </div>
 
-<script>
+<script type="text/javascript">
+    // On écoute le clic sur les boutons avec la classe .ted
     $(document).on('click', '.ted', function() {
         var panier = JSON.parse(localStorage.getItem('panier')) || {};
         var id = this.id.toString();
         
         if (panier[id]) {
+            // Si le produit existe déjà, on ajoute +1 à la quantité
             panier[id].quantite += 1;
         } else {
-            var nom = document.getElementById('nm'+id).innerText;
-            var prix = document.getElementById('pr'+id).innerText;
-            panier[id] = { nom: nom, prix: prix, quantite: 1 };
+            // Sinon, on crée l'objet produit
+            var nom = document.getElementById('nm' + id).innerText.trim();
+            var prix = document.getElementById('pr' + id).innerText.trim();
+            
+            panier[id] = { 
+                nom: nom, 
+                prix: parseFloat(prix), 
+                quantite: 1 
+            };
         }
+        
+        // On sauvegarde dans le navigateur
         localStorage.setItem('panier', JSON.stringify(panier));
+        
+        // On met à jour le badge immédiatement (fonction dans base.html)
         updateBadge();
+        
+        // Petit effet visuel pour confirmer l'ajout
+        $(this).text("Ajouté !").removeClass('btn-primary').addClass('btn-success');
+        setTimeout(() => {
+            $(this).text("Ajouter au panier").removeClass('btn-success').addClass('btn-primary');
+        }, 1000);
     });
 </script>
 {% endblock %}

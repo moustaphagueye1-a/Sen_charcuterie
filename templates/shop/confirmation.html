@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card shadow-lg border-0 p-5 rounded-4">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+                </div>
+                <h1 class="fw-bold text-dark">Merci, {{ nom }} !</h1>
+                <p class="lead text-muted">
+                    Bonsoir <strong>{{ nom }}</strong>, votre commande a été bien enregistrée avec succès.
+                </p>
+                <hr class="my-4">
+                <div class="bg-light p-3 rounded mb-4">
+                    <p class="mb-1">Un conseiller va vous contacter sous peu sur le <strong>{{ telephone }}</strong>.</p>
+                    <p class="small text-secondary">Région de livraison : {{ region }}</p>
+                </div>
+                <a href="{% url 'home' %}" class="btn btn-primary btn-lg px-5 rounded-pill fw-bold">
+                    <i class="fas fa-shopping-bag me-2"></i>Retour à la boutique
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

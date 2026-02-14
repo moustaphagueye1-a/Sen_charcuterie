@@ -1,26 +1,326 @@
 {% extends 'base.html' %}
 
+{% block extra_css %}
+<style>
+    .confirmation-section {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 0;
+    }
+
+    .confirmation-card {
+        background: white;
+        border-radius: 25px;
+        padding: 60px 50px;
+        box-shadow: 0 15px 60px rgba(0, 0, 0, 0.12);
+        max-width: 700px;
+        width: 100%;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        border-top: 6px solid var(--warm-gold);
+        animation: slideUp 0.6s ease;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .confirmation-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 20px,
+            rgba(212, 175, 55, 0.02) 20px,
+            rgba(212, 175, 55, 0.02) 40px
+        );
+        pointer-events: none;
+    }
+
+    .confirmation-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .success-icon-wrapper {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        box-shadow: 0 10px 30px rgba(46, 204, 113, 0.3);
+        animation: scaleIn 0.5s ease 0.3s both;
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .success-icon {
+        font-size: 3.5rem;
+        color: white;
+        animation: checkmark 0.8s ease 0.5s both;
+    }
+
+    @keyframes checkmark {
+        0% {
+            transform: scale(0) rotate(-45deg);
+            opacity: 0;
+        }
+        50% {
+            transform: scale(1.2) rotate(5deg);
+        }
+        100% {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+        }
+    }
+
+    .confirmation-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: var(--deep-burgundy);
+        margin-bottom: 20px;
+        font-weight: 800;
+        animation: fadeIn 0.6s ease 0.6s both;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .customer-name {
+        color: var(--warm-gold);
+        font-weight: 700;
+    }
+
+    .confirmation-message {
+        font-size: 1.15rem;
+        color: var(--charcoal);
+        line-height: 1.8;
+        margin-bottom: 30px;
+        animation: fadeIn 0.6s ease 0.8s both;
+    }
+
+    .info-box {
+        background: linear-gradient(135deg, #f8f8f8, #ffffff);
+        border-radius: 15px;
+        padding: 25px;
+        margin: 30px 0;
+        border-left: 5px solid var(--primary-red);
+        text-align: left;
+        animation: fadeIn 0.6s ease 1s both;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+        padding: 12px;
+        background: white;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .info-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--warm-gold), #C19A2E);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .info-content {
+        flex: 1;
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+        color: var(--sage);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 3px;
+    }
+
+    .info-value {
+        font-size: 1.1rem;
+        color: var(--charcoal);
+        font-weight: 700;
+    }
+
+    .next-steps {
+        background: linear-gradient(135deg, rgba(139, 0, 0, 0.05), rgba(212, 175, 55, 0.05));
+        border-radius: 15px;
+        padding: 25px;
+        margin: 30px 0;
+        animation: fadeIn 0.6s ease 1.2s both;
+    }
+
+    .next-steps-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.4rem;
+        color: var(--deep-burgundy);
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .steps-list {
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    .step-item {
+        display: flex;
+        align-items: start;
+        gap: 12px;
+        margin-bottom: 12px;
+        font-size: 1rem;
+        color: var(--charcoal);
+    }
+
+    .step-number {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--primary-red);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+
+    .btn-back-home {
+        background: linear-gradient(135deg, var(--primary-red), var(--deep-burgundy));
+        color: white;
+        border: none;
+        padding: 18px 50px;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        margin-top: 30px;
+        animation: fadeIn 0.6s ease 1.4s both;
+    }
+
+    .btn-back-home:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(139, 0, 0, 0.4);
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .confirmation-card {
+            padding: 40px 30px;
+        }
+
+        .confirmation-title {
+            font-size: 2rem;
+        }
+
+        .confirmation-message {
+            font-size: 1rem;
+        }
+
+        .info-box {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <div class="card shadow-lg border-0 p-5 rounded-4">
-                <div class="mb-4">
-                    <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
-                </div>
-                <h1 class="fw-bold text-dark">Merci, {{ nom }} !</h1>
-                <p class="lead text-muted">
-                    Bonsoir <strong>{{ nom }}</strong>, votre commande a été bien enregistrée avec succès.
-                </p>
-                <hr class="my-4">
-                <div class="bg-light p-3 rounded mb-4">
-                    <p class="mb-1">Un conseiller va vous contacter sous peu sur le <strong>{{ telephone }}</strong>.</p>
-                    <p class="small text-secondary">Région de livraison : {{ region }}</p>
-                </div>
-                <a href="{% url 'home' %}" class="btn btn-primary btn-lg px-5 rounded-pill fw-bold">
-                    <i class="fas fa-shopping-bag me-2"></i>Retour à la boutique
-                </a>
+<div class="confirmation-section">
+    <div class="confirmation-card">
+        <div class="confirmation-content">
+            <div class="success-icon-wrapper">
+                <i class="fas fa-check success-icon"></i>
             </div>
+
+            <h1 class="confirmation-title">
+                Merci <span class="customer-name">{{ nom }}</span> !
+            </h1>
+
+            <p class="confirmation-message">
+                Votre commande a été enregistrée avec succès. Notre équipe prépare déjà vos produits avec le plus grand soin.
+            </p>
+
+            <div class="next-steps">
+                <h3 class="next-steps-title">Prochaines étapes</h3>
+                <div class="steps-list">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <span>Un conseiller vous contactera sous peu</span>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <span>Nous confirmerons les détails de votre commande</span>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <span>Votre commande sera livrée dans les meilleurs délais</span>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{% url 'home' %}" class="btn-back-home">
+                <i class="fas fa-home"></i>
+                Retour à la boutique
+            </a>
         </div>
     </div>
 </div>

@@ -1,23 +1,311 @@
 {% extends 'base.html' %}
 
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, rgba(139, 0, 0, 0.9), rgba(92, 10, 10, 0.95)), 
+                    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%238B0000" width="1200" height="400"/></svg>');
+        padding: 60px 0;
+        border-radius: 20px;
+        margin-bottom: 50px;
+        box-shadow: 0 10px 40px rgba(139, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(212, 175, 55, 0.05) 10px,
+            rgba(212, 175, 55, 0.05) 20px
+        );
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: var(--cream);
+    }
+
+    .hero-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--warm-gold);
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+        margin-bottom: 15px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        color: var(--cream);
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+
+    .products-header {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: var(--deep-burgundy);
+        margin-bottom: 10px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary-red), var(--warm-gold), var(--primary-red));
+    }
+
+    .product-card {
+        height: 100%;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+    }
+
+    .product-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-red), var(--warm-gold));
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(139, 0, 0, 0.2);
+    }
+
+    .product-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .product-image-wrapper {
+        position: relative;
+        overflow: hidden;
+        height: 250px;
+        background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+    }
+
+    .product-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .product-card:hover img {
+        transform: scale(1.15);
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, var(--warm-gold), #C19A2E);
+        color: var(--deep-burgundy);
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        z-index: 10;
+    }
+
+    .product-body {
+        padding: 25px 20px;
+        background: white;
+    }
+
+    .product-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--charcoal);
+        margin-bottom: 12px;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+    }
+
+    .product-price {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-red);
+        margin-bottom: 20px;
+        font-family: 'Lato', sans-serif;
+    }
+
+    .product-price span {
+        font-size: 1rem;
+        color: var(--sage);
+        font-weight: 400;
+    }
+
+    .product-actions {
+        display: grid;
+        gap: 10px;
+    }
+
+    .btn-detail {
+        background: transparent;
+        border: 2px solid var(--sage);
+        color: var(--sage);
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-detail:hover {
+        background: var(--sage);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(139, 157, 131, 0.3);
+    }
+
+    .btn-add-cart {
+        background: linear-gradient(135deg, var(--primary-red), var(--deep-burgundy));
+        border: none;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 50px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-add-cart::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-add-cart:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .btn-add-cart:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+    }
+
+    .btn-add-cart.added {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+    }
+
+    .empty-state i {
+        font-size: 5rem;
+        color: var(--sage);
+        margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+        font-family: 'Playfair Display', serif;
+        color: var(--charcoal);
+        margin-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+
+        .product-image-wrapper {
+            height: 200px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row row-cols-1 row-cols-md-4 g-4">
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Fraîcheur & Qualité Garanties</h1>
+        <p class="hero-subtitle">Découvrez notre sélection de viandes, volailles et charcuterie premium</p>
+    </div>
+</div>
+
+<div class="products-header">
+    <h2 class="section-title">Nos Produits</h2>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
     {% for produit in produits %}
     <div class="col">
-        <div class="card h-100 shadow-sm border-0">
-            {% if produit.image %}
-                <img src="{{ produit.image.url }}" class="card-img-top" style="height:200px; object-fit:cover;">
-            {% endif %}
-            <div class="card-body text-center">
-                <h5 class="card-title fw-bold" id="nm{{produit.id}}">{{ produit.nom }}</h5>
-                <p class="text-success fw-bold">
-                    <span id="pr{{produit.id}}">{{ produit.prix }}</span> FCFA
+        <div class="card product-card">
+            <div class="product-image-wrapper">
+                <span class="product-badge">Premium</span>
+                {% if produit.image %}
+                    <img src="{{ produit.image.url }}" alt="{{ produit.nom }}">
+                {% else %}
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23e0e0e0' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='20' fill='%23999'%3EImage produit%3C/text%3E%3C/svg%3E" alt="{{ produit.nom }}">
+                {% endif %}
+            </div>
+            <div class="product-body">
+                <h5 class="product-title" id="nm{{produit.id}}">{{ produit.nom }}</h5>
+                <p class="product-price">
+                    <span id="pr{{produit.id}}">{{ produit.prix }}</span> <span>FCFA</span>
                 </p>
                 
-                <div class="d-grid gap-2">
-                    <a href="{% url 'detail' produit.id %}" class="btn btn-outline-secondary btn-sm rounded-pill">Détails</a>
-                    <button id="{{ produit.id }}" class="btn ted btn-primary btn-sm rounded-pill fw-bold">
-                        Ajouter au panier
+                <div class="product-actions">
+                    <a href="{% url 'detail' produit.id %}" class="btn btn-detail">
+                        <i class="fas fa-info-circle me-1"></i> Voir détails
+                    </a>
+                    <button id="{{ produit.id }}" class="btn btn-add-cart ted">
+                        <i class="fas fa-cart-plus me-2"></i> Ajouter au panier
                     </button>
                 </div>
             </div>
@@ -27,16 +315,14 @@
 </div>
 
 <script type="text/javascript">
-    // On écoute le clic sur les boutons avec la classe .ted
     $(document).on('click', '.ted', function() {
+        var $button = $(this);
         var panier = JSON.parse(localStorage.getItem('panier')) || {};
         var id = this.id.toString();
         
         if (panier[id]) {
-            // Si le produit existe déjà, on ajoute +1 à la quantité
             panier[id].quantite += 1;
         } else {
-            // Sinon, on crée l'objet produit
             var nom = document.getElementById('nm' + id).innerText.trim();
             var prix = document.getElementById('pr' + id).innerText.trim();
             
@@ -47,17 +333,13 @@
             };
         }
         
-        // On sauvegarde dans le navigateur
         localStorage.setItem('panier', JSON.stringify(panier));
-        
-        // On met à jour le badge immédiatement (fonction dans base.html)
         updateBadge();
         
-        // Petit effet visuel pour confirmer l'ajout
-        $(this).text("Ajouté !").removeClass('btn-primary').addClass('btn-success');
+        $button.html('<i class="fas fa-check me-2"></i> Ajouté !').addClass('added');
         setTimeout(() => {
-            $(this).text("Ajouter au panier").removeClass('btn-success').addClass('btn-primary');
-        }, 1000);
+            $button.html('<i class="fas fa-cart-plus me-2"></i> Ajouter au panier').removeClass('added');
+        }, 1500);
     });
 </script>
 {% endblock %}

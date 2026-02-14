@@ -4,112 +4,384 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}AviMarket | Excellence Avicole{% endblock %}</title>
+    <title>{% block title %}AviMarket | Viandes & Charcuterie Premium{% endblock %}</title>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f7f6;
+        :root {
+            --primary-red: #8B0000;
+            --deep-burgundy: #5C0A0A;
+            --warm-gold: #D4AF37;
+            --cream: #FFF8E7;
+            --charcoal: #2C2C2C;
+            --sage: #8B9D83;
+            --light-gray: #F5F5F5;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: linear-gradient(135deg, var(--cream) 0%, #FFF 50%, var(--cream) 100%);
+            color: var(--charcoal);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(139, 0, 0, 0.02) 2px, rgba(139, 0, 0, 0.02) 4px),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(139, 0, 0, 0.02) 2px, rgba(139, 0, 0, 0.02) 4px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Navigation */
         .navbar {
-            background-color: #2c3e50; /* Bleu nuit pro */
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, var(--deep-burgundy) 0%, var(--primary-red) 100%);
+            box-shadow: 0 4px 20px rgba(139, 0, 0, 0.3);
+            padding: 1rem 0;
+            border-bottom: 3px solid var(--warm-gold);
         }
+
         .navbar-brand {
-            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            font-weight: 800;
+            font-size: 1.8rem;
             letter-spacing: 1px;
+            color: var(--warm-gold) !important;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
         }
-        .btn-search {
-            background-color: #e67e22; /* Orange AviMarket */
-            border: none;
-            color: white;
-            border-radius: 0 20px 20px 0;
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+            text-shadow: 2px 2px 8px rgba(212, 175, 55, 0.6);
         }
-        .btn-search:hover {
-            background-color: #d35400;
-            color: white;
+
+        .navbar-brand i {
+            color: var(--cream);
+            animation: pulse 2s ease-in-out infinite;
         }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Search Bar */
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            max-width: 600px;
+        }
+
         .search-input {
-            border-radius: 20px 0 0 20px;
-            border: 1px solid #ddd;
+            border: 2px solid var(--warm-gold);
+            border-radius: 50px;
+            padding: 12px 60px 12px 24px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            width: 100%;
+            font-size: 1rem;
         }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--cream);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            background: white;
+        }
+
+        .btn-search {
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--warm-gold) 0%, #C19A2E 100%);
+            border: none;
+            color: var(--deep-burgundy);
+            border-radius: 50px;
+            padding: 8px 20px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .btn-search:hover {
+            background: linear-gradient(135deg, #E5C158 0%, var(--warm-gold) 100%);
+            transform: translateY(-50%) scale(1.05);
+            color: var(--primary-red);
+        }
+
+        /* Cart Badge */
+        .cart-link {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 16px;
+            background: rgba(255, 248, 231, 0.1);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .cart-link:hover {
+            background: rgba(255, 248, 231, 0.2);
+            transform: scale(1.05);
+        }
+
+        .cart-icon {
+            font-size: 1.5rem;
+            color: var(--warm-gold);
+        }
+
         #panier_badge {
-            font-size: 0.75rem;
-            vertical-align: top;
-            margin-left: -5px;
-        }
-        footer {
-            background: #2c3e50;
+            position: absolute;
+            top: 2px;
+            right: 8px;
+            background: linear-gradient(135deg, #FF4444, #CC0000);
             color: white;
-            padding: 20px 0;
-            margin-top: 50px;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(255, 68, 68, 0.4);
+        }
+
+        /* Admin Button */
+        .btn-admin {
+            background: transparent;
+            border: 2px solid var(--warm-gold);
+            color: var(--warm-gold);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-admin:hover {
+            background: var(--warm-gold);
+            color: var(--deep-burgundy);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Main Content */
+        main {
+            min-height: calc(100vh - 200px);
+            padding: 40px 0;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(180deg, var(--charcoal) 0%, #1a1a1a 100%);
+            color: var(--cream);
+            padding: 40px 0 20px;
+            margin-top: 60px;
+            border-top: 4px solid var(--warm-gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--warm-gold), transparent);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h4 {
+            font-family: 'Playfair Display', serif;
+            color: var(--warm-gold);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .footer-section p, .footer-section a {
+            color: var(--light-gray);
+            text-decoration: none;
+            line-height: 1.8;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--warm-gold);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-icons a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--warm-gold);
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            background: var(--warm-gold);
+            color: var(--deep-burgundy);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
             text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            color: var(--light-gray);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+            
+            .search-wrapper {
+                max-width: 100%;
+                margin: 15px 0;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <div class="content-wrapper">
+        <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    <i class="fas fa-drumstick-bite me-2"></i>AviMarket
+                </a>
 
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="fas fa-kiwi-bird me-2"></i>AviMarket
-            </a>
-
-            <form class="d-flex mx-auto w-50" action="{% url 'home' %}" method="GET">
-                <input class="form-control search-input" type="search" name="item-name" placeholder="Rechercher un produit..." aria-label="Search">
-                <button class="btn btn-search px-4" type="submit text-white">
-                    <i class="fas fa-search"></i>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
-            </form>
 
-            <div class="d-flex align-items-center">
-                <ul class="navbar-nav me-3">
-                    <li class="nav-item">
-                        <a class="nav-link text-white fw-bold" href="{% url 'verifier' %}">
-                            <i class="fas fa-shopping-basket fa-lg"></i>
-                            <span id="panier_badge" class="badge bg-danger rounded-pill">0</span>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <form class="search-wrapper mx-auto my-3 my-lg-0" action="{% url 'home' %}" method="GET">
+                        <input class="search-input" type="search" name="item-name" placeholder="Rechercher poulet, viande, saucisse..." aria-label="Search">
+                        <button class="btn-search" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+
+                    <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+                        <a class="cart-link" href="{% url 'verifier' %}">
+                            <i class="fas fa-shopping-basket cart-icon"></i>
+                            <span id="panier_badge">0</span>
                         </a>
-                    </li>
-                </ul>
-                <a href="/admin" class="btn btn-sm btn-outline-light rounded-pill px-3">Admin</a>
+                        <a href="/admin" class="btn-admin">Admin</a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <main class="min-vh-100">
-        <div class="container py-4">
-            {% block content %}
-            {% endblock %}
-        </div>
-    </main>
+        <main>
+            <div class="container">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </main>
 
-    <footer>
-        <div class="container">
-            <p class="mb-0">&copy; 2026 AviMarket - Excellence Avicole. Tous droits réservés.</p>
-        </div>
-    </footer>
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h4>AviMarket</h4>
+                        <p>Votre partenaire de confiance pour les produits avicoles et la charcuterie premium au Sénégal.</p>
+                        <div class="social-icons">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-whatsapp"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="footer-section">
+                        <h4>Nos Produits</h4>
+                        <p><a href="#">Poulet frais</a></p>
+                        <p><a href="#">Viandes de qualité</a></p>
+                        <p><a href="#">Charcuterie</a></p>
+                        <p><a href="#">Produits laitiers</a></p>
+                    </div>
+
+                    <div class="footer-section">
+                        <h4>Service Client</h4>
+                        <p><i class="fas fa-phone me-2"></i> +221 XX XXX XX XX</p>
+                        <p><i class="fas fa-envelope me-2"></i> contact@avimarket.sn</p>
+                        <p><i class="fas fa-map-marker-alt me-2"></i> Dakar, Sénégal</p>
+                    </div>
+
+                    <div class="footer-section">
+                        <h4>Horaires</h4>
+                        <p>Lundi - Samedi<br>8h00 - 20h00</p>
+                        <p>Dimanche<br>8h00 - 14h00</p>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <p class="mb-0">&copy; 2026 AviMarket - Excellence en Viandes & Charcuterie. Tous droits réservés.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script type="text/javascript">
-        // Cette fonction met à jour le petit badge rouge partout sur le site
         function updateBadge() {
             var panier = JSON.parse(localStorage.getItem('panier')) || {};
             var total = 0;
             
             for (var x in panier) {
-                // On s'assure que l'élément a une propriété quantite pour éviter le NaN
                 if (panier[x].hasOwnProperty('quantite')) {
                     total += parseInt(panier[x].quantite);
                 }
@@ -121,7 +393,6 @@
             }
         }
 
-        // Appeler la fonction au chargement de chaque page
         $(document).ready(function() {
             updateBadge();
         });

@@ -1,132 +1,456 @@
 {% extends 'base.html' %}
 
+{% block extra_css %}
+<style>
+    .checkout-section {
+        margin: 40px 0;
+    }
+
+    .checkout-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .checkout-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: var(--deep-burgundy);
+        margin-bottom: 15px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .checkout-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary-red), var(--warm-gold), var(--primary-red));
+    }
+
+    .checkout-subtitle {
+        color: var(--sage);
+        font-size: 1.1rem;
+        margin-top: 25px;
+    }
+
+    .cart-summary-card {
+        background: white;
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        border-top: 5px solid var(--warm-gold);
+        margin-bottom: 30px;
+        position: sticky;
+        top: 100px;
+    }
+
+    .cart-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        color: var(--deep-burgundy);
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .cart-items-list {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-bottom: 25px;
+    }
+
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: #f8f8f8;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .cart-item:hover {
+        background: #f0f0f0;
+        transform: translateX(5px);
+    }
+
+    .item-info {
+        flex: 1;
+    }
+
+    .item-name {
+        font-weight: 700;
+        color: var(--charcoal);
+        margin-bottom: 5px;
+    }
+
+    .item-details {
+        font-size: 0.9rem;
+        color: var(--sage);
+    }
+
+    .item-price {
+        font-weight: 700;
+        color: var(--primary-red);
+        font-size: 1.1rem;
+    }
+
+    .cart-total-section {
+        padding-top: 20px;
+        border-top: 2px solid var(--warm-gold);
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .total-label {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--charcoal);
+    }
+
+    .total-amount {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary-red);
+    }
+
+    .empty-cart {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-cart i {
+        font-size: 4rem;
+        color: var(--sage);
+        margin-bottom: 20px;
+    }
+
+    .empty-cart h3 {
+        font-family: 'Playfair Display', serif;
+        color: var(--charcoal);
+        margin-bottom: 15px;
+    }
+
+    .checkout-form-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        border-top: 5px solid var(--primary-red);
+    }
+
+    .form-section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        color: var(--deep-burgundy);
+        margin-bottom: 25px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-section-title i {
+        color: var(--warm-gold);
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--charcoal);
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-label .required {
+        color: var(--primary-red);
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--warm-gold);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .btn-submit-order {
+        background: linear-gradient(135deg, var(--primary-red), var(--deep-burgundy));
+        color: white;
+        border: none;
+        padding: 18px 40px;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        width: 100%;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-submit-order::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-submit-order:hover::before {
+        width: 500px;
+        height: 500px;
+    }
+
+    .btn-submit-order:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(139, 0, 0, 0.4);
+    }
+
+    .btn-submit-order:disabled {
+        background: #cccccc;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 992px) {
+        .cart-summary-card {
+            position: static;
+            margin-bottom: 30px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .checkout-title {
+            font-size: 2rem;
+        }
+
+        .checkout-form-card {
+            padding: 25px;
+        }
+
+        .cart-summary-card {
+            padding: 25px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row">
-    <div class="col-md-5">
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="card-header bg-dark text-white fw-bold">
-                <i class="fas fa-shopping-basket me-2"></i>Résumé de la commande
-            </div>
-            <div class="card-body">
-                <ul class="list-group list-group-flush" id="item-list">
-                    </ul>
-                <div class="d-flex justify-content-between mt-3 p-3 bg-light rounded border-start border-success border-4">
-                    <span class="fw-bold text-uppercase">Total à payer :</span>
-                    <span class="fw-bold text-success" style="font-size: 1.2rem;">
-                        <span id="total_display">0</span> FCFA
-                    </span>
+<div class="checkout-section">
+    <div class="checkout-header">
+        <h1 class="checkout-title">Finaliser votre commande</h1>
+        <p class="checkout-subtitle">Vérifiez vos articles et complétez vos informations</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="cart-summary-card">
+                <h2 class="cart-title"><i class="fas fa-shopping-basket me-2"></i>Votre panier</h2>
+                <div id="cart-content">
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Votre panier est vide</h3>
+                        <p>Ajoutez des produits pour commencer</p>
+                        <a href="{% url 'home' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-arrow-left me-2"></i>Retour à la boutique
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-7">
-        <div class="card shadow-sm border-0 p-4 border-top border-primary border-5">
-            <h4 class="mb-4 fw-bold text-primary text-uppercase text-center">Informations de livraison</h4>
-            
-            <form method="POST" id="form-commande">
-                {% csrf_token %}
-                
-                <input type="hidden" name="items" id="items">
-                <input type="hidden" name="total" id="total_db">
+        <div class="col-lg-7">
+            <div class="checkout-form-card">
+                <form method="POST" id="checkout-form">
+                    {% csrf_token %}
+                    
+                    <input type="hidden" name="items" id="items">
+                    <input type="hidden" name="total" id="total">
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Nom Complet</label>
-                        <input type="text" name="nom" id="nom" class="form-control" placeholder="Prénom et Nom" required>
+                    <div class="form-section-title">
+                        <i class="fas fa-user"></i>
+                        <span>Informations personnelles</span>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Email</label>
-                        <input type="email" name="email" id="email" class="form-control" placeholder="votre@email.com" required>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Téléphone (WhatsApp)</label>
-                        <input type="text" name="telephone" id="telephone" class="form-control" placeholder="77 000 00 00" required>
+                    <div class="form-group">
+                        <label class="form-label" for="nom">
+                            Nom complet <span class="required">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="nom" name="nom" required placeholder="Votre nom complet">
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Région</label>
-                        <select name="region" id="region" class="form-select" required>
-                            <option value="" selected disabled>Choisir la région...</option>
-                            <option>Dakar</option>
-                            <option>Thiès</option>
-                            <option>Saint-Louis</option>
-                            <option>Diourbel</option>
-                            <option>Autre...</option>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">
+                            Adresse email <span class="required">*</span>
+                        </label>
+                        <input type="email" class="form-control" id="email" name="email" required placeholder="exemple@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="telephone">
+                            Téléphone <span class="required">*</span>
+                        </label>
+                        <input type="tel" class="form-control" id="telephone" name="telephone" required placeholder="+221 XX XXX XX XX">
+                    </div>
+
+                    <div class="form-section-title mt-4">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Adresse de livraison</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="region">
+                            Région <span class="required">*</span>
+                        </label>
+                        <select class="form-select" id="region" name="region" required>
+                            <option value="">Sélectionner une région</option>
+                            <option value="Dakar">Dakar</option>
+                            <option value="Thiès">Thiès</option>
+                            <option value="Saint-Louis">Saint-Louis</option>
+                            <option value="Diourbel">Diourbel</option>
+                            <option value="Kaolack">Kaolack</option>
+                            <option value="Ziguinchor">Ziguinchor</option>
+                            <option value="Louga">Louga</option>
+                            <option value="Tambacounda">Tambacounda</option>
+                            <option value="Fatick">Fatick</option>
+                            <option value="Kolda">Kolda</option>
+                            <option value="Matam">Matam</option>
+                            <option value="Kaffrine">Kaffrine</option>
+                            <option value="Kédougou">Kédougou</option>
+                            <option value="Sédhiou">Sédhiou</option>
                         </select>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Ville ou Commune</label>
-                        <input type="text" name="commune" id="commune" class="form-control" placeholder="Ex: Parcelles, Mbour..." required>
+                    <div class="form-group">
+                        <label class="form-label" for="commune">
+                            Commune <span class="required">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="commune" name="commune" required placeholder="Votre commune">
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Adresse précise</label>
-                        <input type="text" name="adresse" id="adresse" class="form-control" placeholder="N° de porte, Rue..." required>
+
+                    <div class="form-group">
+                        <label class="form-label" for="adresse">
+                            Adresse complète <span class="required">*</span>
+                        </label>
+                        <textarea class="form-control" id="adresse" name="adresse" rows="3" required placeholder="Numéro, rue, quartier..."></textarea>
                     </div>
-                </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Mot de passe (pour votre compte)</label>
-                    <input type="password" name="password" class="form-control" placeholder="********">
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100 fw-bold py-3 mt-2 shadow-sm">
-                    <i class="fas fa-check-circle me-2"></i>CONFIRMER LA COMMANDE
-                </button>
-            </form>
-            
-            <button onclick="localStorage.clear(); window.location.href='/';" class="btn btn-link text-danger w-100 mt-3 text-decoration-none">
-                <i class="fas fa-trash-alt me-1"></i> Annuler et vider le panier
-            </button>
+                    <button type="submit" class="btn btn-submit-order" id="submit-btn" disabled>
+                        <i class="fas fa-check-circle me-2"></i>
+                        Confirmer la commande
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-    // 1. On récupère le panier du localStorage
-    var panier = JSON.parse(localStorage.getItem('panier')) || {};
-    var totalGeneral = 0;
-    var itemList = $('#item-list');
+    function afficherPanier() {
+        var panier = JSON.parse(localStorage.getItem('panier')) || {};
+        var cartContent = document.getElementById('cart-content');
+        var submitBtn = document.getElementById('submit-btn');
+        var itemsInput = document.getElementById('items');
+        var totalInput = document.getElementById('total');
+        
+        var total = 0;
+        var itemsArray = [];
+        var html = '';
 
-    // 2. Si le panier est vide, on affiche un message
-    if (Object.keys(panier).length === 0) {
-        itemList.append('<li class="list-group-item text-center py-4">Votre panier est vide</li>');
-        $('button[type="submit"]').addClass('disabled').prop('disabled', true);
-    } else {
-        // 3. Sinon, on boucle pour afficher chaque article et calculer le total
-        for (var id in panier) {
-            let item = panier[id];
-            let prixLigne = item.quantite * item.prix;
-            totalGeneral += prixLigne;
-            
-            itemList.append(`
-                <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                    <div>
-                        <h6 class="my-0 fw-bold">${item.nom}</h6>
-                        <small class="text-muted">Prix: ${item.prix} x ${item.quantite}</small>
-                    </div>
-                    <span class="fw-bold">${prixLigne.toLocaleString()} FCFA</span>
-                </li>
-            `);
+        if (Object.keys(panier).length === 0) {
+            cartContent.innerHTML = `
+                <div class="empty-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Votre panier est vide</h3>
+                    <p>Ajoutez des produits pour commencer</p>
+                    <a href="{% url 'home' %}" class="btn btn-primary mt-3">
+                        <i class="fas fa-arrow-left me-2"></i>Retour à la boutique
+                    </a>
+                </div>
+            `;
+            submitBtn.disabled = true;
+            return;
         }
+
+        html = '<div class="cart-items-list">';
+        
+        for (var id in panier) {
+            var item = panier[id];
+            var sousTotal = item.prix * item.quantite;
+            total += sousTotal;
+            
+            itemsArray.push({
+                id: id,
+                nom: item.nom,
+                prix: item.prix,
+                quantite: item.quantite
+            });
+
+            html += `
+                <div class="cart-item">
+                    <div class="item-info">
+                        <div class="item-name">${item.nom}</div>
+                        <div class="item-details">
+                            ${item.quantite} x ${item.prix} FCFA
+                        </div>
+                    </div>
+                    <div class="item-price">${sousTotal} FCFA</div>
+                </div>
+            `;
+        }
+        
+        html += '</div>';
+        
+        html += `
+            <div class="cart-total-section">
+                <div class="total-row">
+                    <span class="total-label">Total à payer:</span>
+                    <span class="total-amount">${total} FCFA</span>
+                </div>
+            </div>
+        `;
+        
+        cartContent.innerHTML = html;
+        itemsInput.value = JSON.stringify(itemsArray);
+        totalInput.value = total;
+        submitBtn.disabled = false;
     }
 
-    // 4. MISE À JOUR DES VALEURS (Affichage + Champs cachés pour Django)
-    $('#total_display').text(totalGeneral.toLocaleString());
-    
-    // TRÈS IMPORTANT : On injecte les données dans les inputs hidden pour que Django les reçoive
-    $('#total_db').val(totalGeneral); 
-    $('#items').val(JSON.stringify(panier));
+    $(document).ready(function() {
+        afficherPanier();
+        updateBadge();
 
-    // 5. Action lors de la soumission
-    $('#form-commande').submit(function() {
-        // Optionnel : on peut afficher un petit message avant de vider
-        localStorage.clear(); // On vide le panier local après l'envoi
+        $('#checkout-form').on('submit', function() {
+            localStorage.removeItem('panier');
+            updateBadge();
+        });
     });
 </script>
 {% endblock %}
